@@ -77,25 +77,6 @@ namespace SuperColmadoDennys.Data
                 new Categoria { Id = 5, Nombre = "Alcohol", Descripcion = "Bebidas alcohólicas", EstaActiva = true } // Corregí "Alchol" a "Alcohol"
             );
 
-            modelBuilder.Entity<Productos>().HasData(
-                // Lácteos
-                new Productos { Id = 1, Nombre = "Leche Entera", Precio = 200, Stock = 50, CodigoBarras = "1234567890123", CategoriaId = 1, EstaActivo = true, ImagenUrl = "/Imagen/LecheEntera.png" },
-                new Productos { Id = 2, Nombre = "Yogur Natural", Precio = 300, Stock = 100, CodigoBarras = "1234567890124", CategoriaId = 1, EstaActivo = true, ImagenUrl = "/Imagen/YogurNatural.jpg" },
-                // Panadería
-                new Productos { Id = 3, Nombre = "Pan Integral", Precio = 60, Stock = 30, CodigoBarras = "9876543210987", CategoriaId = 2, EstaActivo = true, ImagenUrl = "/Imagen/PanIntegral.jpg" },
-                new Productos { Id = 4, Nombre = "Croissant", Precio = 300, Stock = 40, CodigoBarras = "9876543210988", CategoriaId = 2, EstaActivo = true, ImagenUrl = "/Imagen/Croissants.jpg" },
-                // Enlatados
-                new Productos { Id = 5, Nombre = "Atún en lata", Precio = 400, Stock = 80, CodigoBarras = "5555555555555", CategoriaId = 3, EstaActivo = true, FechaVencimiento = new DateTime(2026, 12, 31), ImagenUrl = "/Imagen/Atun.jpg" },
-                new Productos { Id = 6, Nombre = "Sardinas en tomate", Precio = 125, Stock = 60, CodigoBarras = "5555555555556", CategoriaId = 3, EstaActivo = true, FechaVencimiento = new DateTime(2026, 10, 15), ImagenUrl = "/Imagen/Sardina.jpg" },
-                new Productos { Id = 7, Nombre = "Maíz enlatado", Precio = 70, Stock = 90, CodigoBarras = "5555555555557", CategoriaId = 3, EstaActivo = true, FechaVencimiento = new DateTime(2027, 3, 1), ImagenUrl = "/Imagen/Maiz.jpg" },
-                // Bebidas
-                new Productos { Id = 8, Nombre = "Agua Saratoga 1L", Precio = 500, Stock = 200, CodigoBarras = "1111111111111", CategoriaId = 4, EstaActivo = true , ImagenUrl = "/Imagen/AguaSaratoga.jpg" },
-                new Productos { Id = 9, Nombre = "Coca Cola 2L", Precio = 80, Stock = 150, CodigoBarras = "1111111111112", CategoriaId = 4, EstaActivo = true , ImagenUrl = "/Imagen/Cocacola.jpg" },
-                // Alcohol
-                new Productos { Id = 10, Nombre = "Brugal ExtraViejo 700ml", Precio = 700, Stock = 100, CodigoBarras = "2222222222222", CategoriaId = 5, EstaActivo = true , ImagenUrl = "/Imagen/Brugar.jpg" },
-                new Productos { Id = 11, Nombre = "Brugal Triple Reserva", Precio = 1060, Stock = 100, CodigoBarras = "2222222222223", CategoriaId = 5, EstaActivo = true , ImagenUrl = "/Imagen/TripleReserva.jpg" }
-            );
-
             modelBuilder.Entity<Provedores>().HasData(
                new Provedores { ProvedorId = 1, Nombre = "Induveca", Direccion = "calle jino negrin", Telefono = "8098444618", Correo = "servicioalcliente@induveca.com.do." },
                new Provedores { ProvedorId = 2, Nombre = "Nestle", Direccion = "Carretera nagua", Telefono = "8095882870", Correo = "servicios.consumidor@do.nestle.com." },
