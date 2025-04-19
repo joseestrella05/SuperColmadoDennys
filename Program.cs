@@ -44,6 +44,8 @@ builder.Services.AddBlazorBootstrap();
 builder.Services.AddScoped<ProductoService>();
 builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<ProvedoreServices>();
+builder.Services.AddScoped<CompraServices>();
+builder.Services.AddScoped<EstadoServices>();
 
 var app = builder.Build();
 
