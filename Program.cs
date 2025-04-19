@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using SuperColmadoDennys.Components;
 using SuperColmadoDennys.Components.Account;
 using SuperColmadoDennys.Data;
+using SuperColmadoDennys.Services;
+using System.Reflection.Emit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +36,13 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+
+builder.Services.AddBlazorBootstrap();
+
+
+builder.Services.AddScoped<ProductoService>();
+builder.Services.AddScoped<CategoriaService>();
 
 var app = builder.Build();
 
