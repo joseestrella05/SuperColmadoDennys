@@ -3,7 +3,7 @@
 @inject ProductoService productoService
 @inject CategoriaService categoriaService
 @inject ToastService toastService
-
+@rendermode InteractiveServer
 
 <PageTitle>Producto</PageTitle>
 <div class="container">
@@ -16,91 +16,77 @@
         </div>
 
         <div class="card-body">
-            @*labels*@
+            @* Labels *@
             <div class="row">
-                @*Filtrar por*@
                 <div class="col-3">
                     <label class="col-form-label"><strong>Filtrar por</strong></label>
                 </div>
-                @*ValorFiltro*@
                 <div class="col-4">
                     <label class="col-form-label"><strong>Búsqueda</strong></label>
                 </div>
-                <div class="col-2">
-                    <label class="col-form-label"><strong>Desde</strong></label>
-                </div>
-                <div class="col-2">
-                    <label class="col-form-label"><strong>Hasta</strong></label>
-                </div>
                 <div class="col-1">
                     <button type="button" class="btn btn-outline-secondary bi bi-arrow-counterclockwise"
-                    @onclick="Restablecer">
+                            @onclick="Restablecer">
                     </button>
                 </div>
-
             </div>
 
-        </div>
-
-        @*Inputs y botones*@
-        <div class="row align-items-center">
-            @*filtro*@
-            <div class="col-3">
-                <InputSelect class="form-select" @bind-Value="Filtro">
-                    <option value="" selected disabled>Elija una opción</option>
-                    <option value="ID">ProductoId</option>
-                    
-                </InputSelect>
-            </div>
-
-            @*Busqueda*@
-            <div class="col-4">
-                <div class="input-group">
-                    <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
-                    <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"></button>
+            @* Inputs y botones *@
+            <div class="row align-items-center mb-3">
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="" selected disabled>Elija una opción</option>
+                        <option value="ID">ProductoId</option>
+                    </InputSelect>
+                </div>
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"></button>
+                    </div>
                 </div>
             </div>
-           
 
-        <table class="table table-hover table-bordered text-center">
-            <thead class="table  table-striped text-black">
-                <tr>
-                    <th>Id</th>
-                    <th>Nombres</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Codigo barra</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var producto in Listaproductos)
-                {
-                    <tr>
-                        <td>@producto.Id</td>
-                        <td>@producto.Nombre</td>
-                        <td>@producto.Precio.ToString("n2")</td>
-                        <td>@producto.Stock</td>
-                        <td>@producto.CodigoBarras</td>
-                        <td>@producto.EstaActivo</td>
-                        <td>
-                            <a href="/Producto/Edit/@producto.Id" class="btn btn-outline-primary bi bi-pencil-square"></a>
-                                <button type="button" @onclick="() => MostrarModal(producto.Id, producto.Nombre)" class="btn btn-outline-danger bi bi-trash"></button>
-                        </td>
-                        
-                    </tr>
-                }
-            </tbody>
-        </table>
+            @* Responsive Table *@
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered text-center">
+                    <thead class="table-striped text-black">
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombres</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Codigo barra</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var producto in Listaproductos)
+                        {
+                            <tr>
+                                <td>@producto.Id</td>
+                                <td>@producto.Nombre</td>
+                                <td>@producto.Precio.ToString("n2")</td>
+                                <td>@producto.Stock</td>
+                                <td>@producto.CodigoBarras</td>
+                                <td>@producto.EstaActivo</td>
+                                <td>
+                                    <a href="/Producto/Edit/@producto.Id" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                    <button type="button" @onclick="() => MostrarModal(producto.Id, producto.Nombre)" class="btn btn-outline-danger bi bi-trash"></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-        <div class="card-footer space-between">
+        <div class="card-footer d-flex justify-content-between">
             <label><strong>Total: @Listaproductos.Count </strong></label>
         </div>
     </div>
 </div>
-</div>
-
 
 @if (mostrarModal)
 {
@@ -125,8 +111,8 @@
     <div class="modal-backdrop fade show" @onclick="CerrarModal"></div>
 }
 
-
 @code {
+    // Code remains unchanged
     public List<Productos> Listaproductos { get; set; } = new List<Productos>();
     public string? Filtro { get; set; }
     public string? ValorFiltro { get; set; }
@@ -164,26 +150,24 @@
                         Listaproductos.Clear();
                         Listaproductos.Add(buscarId);
                         TituloNotificacion = " ";
-                        MensajeNotificacion = "¡No se encontraron producto";
+                        MensajeNotificacion = "¡Producto encontrado!";
                         MostrarToast(TipoNotificacion, TituloNotificacion, MensajeNotificacion);
                     }
                     else
                     {
                         TituloNotificacion = " ";
-                        MensajeNotificacion = "¡No se encontraron resultado";
+                        MensajeNotificacion = "¡No se encontraron resultados!";
                         MostrarToast(TipoNotificacion, TituloNotificacion, MensajeNotificacion);
                     }
                 }
                 else
                 {
                     TituloNotificacion = " ";
-                    MensajeNotificacion = "¡El valor ingresado para ProductoId no es válido";
+                    MensajeNotificacion = "¡El valor ingresado para ProductoId no es válido!";
                     MostrarToast(TipoNotificacion, TituloNotificacion, MensajeNotificacion);
                 }
                 StateHasChanged();
                 break;
-
-           
         }
     }
 
@@ -197,7 +181,6 @@
     {
         mostrarModal = false;
         IdSeleccionado = 0;
-       
     }
 
     public async Task Eliminar()
@@ -205,7 +188,7 @@
         try
         {
             await productoService.Eliminar(IdSeleccionado);
-            Listaproductos = await productoService.Listar(x => true); 
+            Listaproductos = await productoService.ListarProducto();
             mostrarModal = false;
             IdSeleccionado = 0;
             TipoNotificacion = ToastType.Success;
@@ -217,7 +200,7 @@
         {
             TipoNotificacion = ToastType.Danger;
             TituloNotificacion = "Error";
-            MensajeNotificacion = "Hubo un error al eliminar la cuenta.";
+            MensajeNotificacion = "Hubo un error al eliminar el producto.";
             MostrarToast(TipoNotificacion, TituloNotificacion, MensajeNotificacion);
         }
     }
@@ -233,3 +216,20 @@
         ValorFiltro = string.Empty;
     }
 }
+<style>
+    .card-body {
+        overflow-x: auto; /* Ensures horizontal scrolling if needed */
+        padding: 1.5rem; /* Adjust padding for better spacing */
+    }
+
+    .table {
+        width: 100%; /* Ensures table takes full width of container */
+        max-width: 100%; /* Prevents table from exceeding container */
+        margin-bottom: 0; /* Removes default margin to fit snugly in card */
+    }
+
+        .table th, .table td {
+            white-space: nowrap; /* Prevents text wrapping in cells */
+            padding: 0.5rem; /* Adjust padding for compact cells */
+        }
+</style>
