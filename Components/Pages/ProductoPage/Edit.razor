@@ -1,0 +1,136 @@
+﻿@page "/Producto/Edit/{Id:int}"
+@inject NavigationManager NavigationManager
+@inject ProductoService productoService
+@inject CategoriaService categoriaService
+@inject ToastService toastService
+@inject NavigationManager navigation
+
+<PageTitle> Editar Producto</PageTitle>
+<EditForm Model="Producto" OnValidSubmit="Crear">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Editar Producto</h5>
+            </div>
+
+            <div class="card-body">
+
+                @*Url*@
+                <div class="mb-3">
+                    <label class="form-label" for="Url"><strong>ImagenUrl</strong></label>
+                    <InputText id="nombres" class="form-control" @bind-Value="Producto.ImagenUrl"></InputText>
+                    <ValidationMessage For="@(()=> Producto.ImagenUrl)"></ValidationMessage>
+                </div>
+
+                @*Nombres*@
+                <div class="mb-3">
+                    <label class="form-label" for="nombres"><strong>Nombre</strong></label>
+                    <InputText id="nombres" class="form-control" @bind-Value="Producto.Nombre"></InputText>
+                    <ValidationMessage For="@(()=> Producto.Nombre)"></ValidationMessage>
+                </div>
+
+                @*Descripcion*@
+                <div class="mb-3">
+                    <label class="form-label" for="sueldo"><strong>Descripcion</strong></label>
+                    <InputText id="sueldo" class="form-control" @bind-Value="Producto.Descripcion"></InputText>
+                    <ValidationMessage For="@(()=> Producto.Descripcion)"></ValidationMessage>
+                </div>
+
+                @*Stock*@
+                <div class="mb-3">
+                    <label class="form-label" for="sueldo"><strong>Stock</strong></label>
+                    <InputNumber id="sueldo" class="form-control" @bind-Value="Producto.Stock"></InputNumber>
+                    <ValidationMessage For="@(()=> Producto.Stock)"></ValidationMessage>
+                </div>
+
+                @*Categoria*@
+                <label class="form-label"><strong>Categoria</strong></label>
+                <div class="mb-3">
+                    <div class="input-group">
+
+                        <InputSelect class="form-control form-select" @bind-Value="Producto.CategoriaId">
+                            <option value="0" selected disabled>Elija una opción</option>
+                            @foreach (var Ciudades in Categorias)
+                            {
+                                <option value="@Ciudades.Id">@Ciudades.Nombre</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(()=> Producto.CategoriaId)"></ValidationMessage>
+
+                    </div>
+                </div>
+
+                @*Precio*@
+                <div class="mb-3">
+                    <label class="form-label" for="sueldo"><strong>Precio</strong></label>
+                    <InputNumber id="sueldo" class="form-control" @bind-Value="Producto.Precio"></InputNumber>
+                    <ValidationMessage For="@(()=> Producto.Precio)"></ValidationMessage>
+                </div>
+
+                @*Codigo de barra*@
+                <div class="mb-3">
+                    <label class="form-label" for="sueldo"><strong>Codigo de barra</strong></label>
+                    <InputText id="sueldo" class="form-control" @bind-Value="Producto.CodigoBarras"></InputText>
+                    <ValidationMessage For="@(()=> Producto.CodigoBarras)"></ValidationMessage>
+                </div>
+
+                @*Fecha*@
+                <div class="mb-3">
+                    <label class="form-label" for="sueldo"><strong>Fechas de vencimiento</strong></label>
+                    <InputDate id="sueldo" class="form-control" @bind-Value="Producto.FechaVencimiento" placeholder="Solo producto con fecha de vencimiento"></InputDate>
+                </div>
+
+
+            </div>
+
+            @* footer *@
+            <div class="card-footer text-center mt-3">
+                <button type="button" class="btn btn-outline-primary ml-2" @onclick="Nuevo"><span class="bi bi-plus"></span> Nuevo </button>
+                <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
+                <a type="button" href="/Tecnico/Index/" class="btn btn-outline-danger"><span class="bi bi-arrow-bar-left"></span> Volver </a>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public List<Categoria> Categorias { get; set; } = new List<Categoria>();
+    public bool NombreRepetido { get; set; }
+    [Inject] protected ToastService ToastService { get; set; }
+    public Productos Producto { get; set; } = new Productos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Producto = await productoService.Buscar(Id);
+        Categorias = await categoriaService.ListarCategoriasAsync();
+    }
+
+    public async Task Crear()
+    {
+        if (!await Validar())
+        {
+            await productoService.Guardar(Producto);
+
+            ToastService.Notify(new(ToastType.Success, "Exito", $"producto Creado correctamente."));
+            Producto = new Productos();
+            navigation.NavigateTo("/Tecnico/Index");
+        }
+        else
+        {
+            ToastService.Notify(new(ToastType.Danger, "Error", $"Ya existe un producto con ese nombre."));
+        }
+    }
+    public void Nuevo()
+    {
+        Producto = new Productos();
+    }
+
+    public async Task<bool> Validar()
+    {
+        var existeTecnico = await productoService.BuscarNombres(Producto.Nombre);
+        return existeTecnico != null;
+    }
+}
