@@ -312,6 +312,11 @@ namespace SuperColmadoDennys.Migrations
                     b.Property<DateTime?>("FechaVencimiento")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ImagenUrl")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -340,6 +345,7 @@ namespace SuperColmadoDennys.Migrations
                             CategoriaId = 1,
                             CodigoBarras = "1234567890123",
                             EstaActivo = true,
+                            ImagenUrl = "/Imagen/LecheEntera.png",
                             Nombre = "Leche Entera",
                             Precio = 200m,
                             Stock = 50
@@ -350,6 +356,7 @@ namespace SuperColmadoDennys.Migrations
                             CategoriaId = 1,
                             CodigoBarras = "1234567890124",
                             EstaActivo = true,
+                            ImagenUrl = "/Imagen/YogurNatural.jpg",
                             Nombre = "Yogur Natural",
                             Precio = 300m,
                             Stock = 100
@@ -360,6 +367,7 @@ namespace SuperColmadoDennys.Migrations
                             CategoriaId = 2,
                             CodigoBarras = "9876543210987",
                             EstaActivo = true,
+                            ImagenUrl = "/Imagen/PanIntegral.jpg",
                             Nombre = "Pan Integral",
                             Precio = 60m,
                             Stock = 30
@@ -370,6 +378,7 @@ namespace SuperColmadoDennys.Migrations
                             CategoriaId = 2,
                             CodigoBarras = "9876543210988",
                             EstaActivo = true,
+                            ImagenUrl = "/Imagen/Croissants.jpg",
                             Nombre = "Croissant",
                             Precio = 300m,
                             Stock = 40
@@ -381,6 +390,7 @@ namespace SuperColmadoDennys.Migrations
                             CodigoBarras = "5555555555555",
                             EstaActivo = true,
                             FechaVencimiento = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ImagenUrl = "/Imagen/Atun.jpg",
                             Nombre = "Atún en lata",
                             Precio = 400m,
                             Stock = 80
@@ -392,6 +402,7 @@ namespace SuperColmadoDennys.Migrations
                             CodigoBarras = "5555555555556",
                             EstaActivo = true,
                             FechaVencimiento = new DateTime(2026, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ImagenUrl = "/Imagen/Sardina.jpg",
                             Nombre = "Sardinas en tomate",
                             Precio = 125m,
                             Stock = 60
@@ -403,6 +414,7 @@ namespace SuperColmadoDennys.Migrations
                             CodigoBarras = "5555555555557",
                             EstaActivo = true,
                             FechaVencimiento = new DateTime(2027, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ImagenUrl = "/Imagen/Maiz.jpg",
                             Nombre = "Maíz enlatado",
                             Precio = 70m,
                             Stock = 90
@@ -413,7 +425,8 @@ namespace SuperColmadoDennys.Migrations
                             CategoriaId = 4,
                             CodigoBarras = "1111111111111",
                             EstaActivo = true,
-                            Nombre = "Agua Evian 1L",
+                            ImagenUrl = "/Imagen/AguaSaratoga.jpg",
+                            Nombre = "Agua Saratoga 1L",
                             Precio = 500m,
                             Stock = 200
                         },
@@ -423,6 +436,7 @@ namespace SuperColmadoDennys.Migrations
                             CategoriaId = 4,
                             CodigoBarras = "1111111111112",
                             EstaActivo = true,
+                            ImagenUrl = "/Imagen/Cocacola.jpg",
                             Nombre = "Coca Cola 2L",
                             Precio = 80m,
                             Stock = 150
@@ -433,6 +447,7 @@ namespace SuperColmadoDennys.Migrations
                             CategoriaId = 5,
                             CodigoBarras = "2222222222222",
                             EstaActivo = true,
+                            ImagenUrl = "/Imagen/Brugar.jpg",
                             Nombre = "Brugal ExtraViejo 700ml",
                             Precio = 700m,
                             Stock = 100
@@ -443,6 +458,7 @@ namespace SuperColmadoDennys.Migrations
                             CategoriaId = 5,
                             CodigoBarras = "2222222222223",
                             EstaActivo = true,
+                            ImagenUrl = "/Imagen/TripleReserva.jpg",
                             Nombre = "Brugal Triple Reserva",
                             Precio = 1060m,
                             Stock = 100

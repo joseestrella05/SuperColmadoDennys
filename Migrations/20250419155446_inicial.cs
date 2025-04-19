@@ -186,6 +186,7 @@ namespace SuperColmadoDennys.Migrations
                     CodigoBarras = table.Column<string>(type: "varchar(13)", maxLength: 13, nullable: false),
                     FechaVencimiento = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EstaActivo = table.Column<bool>(type: "bit", nullable: false),
+                    ImagenUrl = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     CategoriaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -213,20 +214,20 @@ namespace SuperColmadoDennys.Migrations
 
             migrationBuilder.InsertData(
                 table: "Productos",
-                columns: new[] { "Id", "CategoriaId", "CodigoBarras", "Descripcion", "EstaActivo", "FechaVencimiento", "Nombre", "Precio", "Stock" },
+                columns: new[] { "Id", "CategoriaId", "CodigoBarras", "Descripcion", "EstaActivo", "FechaVencimiento", "ImagenUrl", "Nombre", "Precio", "Stock" },
                 values: new object[,]
                 {
-                    { 1, 1, "1234567890123", null, true, null, "Leche Entera", 200m, 50 },
-                    { 2, 1, "1234567890124", null, true, null, "Yogur Natural", 300m, 100 },
-                    { 3, 2, "9876543210987", null, true, null, "Pan Integral", 60m, 30 },
-                    { 4, 2, "9876543210988", null, true, null, "Croissant", 300m, 40 },
-                    { 5, 3, "5555555555555", null, true, new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Atún en lata", 400m, 80 },
-                    { 6, 3, "5555555555556", null, true, new DateTime(2026, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sardinas en tomate", 125m, 60 },
-                    { 7, 3, "5555555555557", null, true, new DateTime(2027, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Maíz enlatado", 70m, 90 },
-                    { 8, 4, "1111111111111", null, true, null, "Agua Evian 1L", 500m, 200 },
-                    { 9, 4, "1111111111112", null, true, null, "Coca Cola 2L", 80m, 150 },
-                    { 10, 5, "2222222222222", null, true, null, "Brugal ExtraViejo 700ml", 700m, 100 },
-                    { 11, 5, "2222222222223", null, true, null, "Brugal Triple Reserva", 1060m, 100 }
+                    { 1, 1, "1234567890123", null, true, null, "/Imagen/LecheEntera.png", "Leche Entera", 200m, 50 },
+                    { 2, 1, "1234567890124", null, true, null, "/Imagen/YogurNatural.jpg", "Yogur Natural", 300m, 100 },
+                    { 3, 2, "9876543210987", null, true, null, "/Imagen/PanIntegral.jpg", "Pan Integral", 60m, 30 },
+                    { 4, 2, "9876543210988", null, true, null, "/Imagen/Croissants.jpg", "Croissant", 300m, 40 },
+                    { 5, 3, "5555555555555", null, true, new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "/Imagen/Atun.jpg", "Atún en lata", 400m, 80 },
+                    { 6, 3, "5555555555556", null, true, new DateTime(2026, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "/Imagen/Sardina.jpg", "Sardinas en tomate", 125m, 60 },
+                    { 7, 3, "5555555555557", null, true, new DateTime(2027, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "/Imagen/Maiz.jpg", "Maíz enlatado", 70m, 90 },
+                    { 8, 4, "1111111111111", null, true, null, "/Imagen/AguaSaratoga.jpg", "Agua Saratoga 1L", 500m, 200 },
+                    { 9, 4, "1111111111112", null, true, null, "/Imagen/Cocacola.jpg", "Coca Cola 2L", 80m, 150 },
+                    { 10, 5, "2222222222222", null, true, null, "/Imagen/Brugar.jpg", "Brugal ExtraViejo 700ml", 700m, 100 },
+                    { 11, 5, "2222222222223", null, true, null, "/Imagen/TripleReserva.jpg", "Brugal Triple Reserva", 1060m, 100 }
                 });
 
             migrationBuilder.CreateIndex(
