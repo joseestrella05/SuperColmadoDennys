@@ -2,6 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject ProductoService productoService
 @inject CategoriaService categoriaService
+@inject ProvedoreServices provedoreServices
 @inject ToastService toastService
 @inject NavigationManager navigation
 @rendermode InteractiveServer
@@ -62,6 +63,20 @@
                     </div>
                 </div>
 
+                <label class="form-label"><strong>Provedor</strong></label>
+                <div class="mb-3">
+                    <div class="form-group">
+                        <label>Proveedor</label>
+                        <InputSelect class="input-field" @bind-Value="Producto.ProveedorId">
+                            <option value="">Seleccione un proveedor</option>
+                            @foreach (var proveedor in provedores)
+                            {
+                                <option value="@proveedor.ProvedorId">@proveedor.ProvedorId - @proveedor.Nombre</option>
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+
                 @*Precio*@
                 <div class="mb-3">
                     <label class="form-label" for="sueldo"><strong>Precio</strong></label>
@@ -102,11 +117,13 @@
     public bool NombreRepetido { get; set; }
     [Inject] protected ToastService ToastService { get; set; }
     public Productos Producto { get; set; } = new Productos();
+    public List<Provedores> provedores { get; set; } = new List<Provedores>();
 
     protected override async Task OnInitializedAsync()
     {
         Producto = await productoService.Buscar(Id);
         Categorias = await categoriaService.ListarCategoriasAsync();
+        provedores = await provedoreServices.Listar(t => true);
     }
 
     public async Task Crear()
