@@ -12,6 +12,8 @@ namespace SuperColmadoDennys.Data
         public DbSet<Productos> Productos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
 
+        public DbSet<Provedores> Provedores { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Llama a la configuración base de IdentityDbContext
@@ -91,6 +93,14 @@ namespace SuperColmadoDennys.Data
                 new Productos { Id = 10, Nombre = "Brugal ExtraViejo 700ml", Precio = 700, Stock = 100, CodigoBarras = "2222222222222", CategoriaId = 5, EstaActivo = true , ImagenUrl = "/Imagen/Brugar.jpg" },
                 new Productos { Id = 11, Nombre = "Brugal Triple Reserva", Precio = 1060, Stock = 100, CodigoBarras = "2222222222223", CategoriaId = 5, EstaActivo = true , ImagenUrl = "/Imagen/TripleReserva.jpg" }
             );
+
+            modelBuilder.Entity<Provedores>().HasData(
+               new Provedores { ProvedorId = 1, Nombre = "Induveca", Direccion = "calle jino negrin", Telefono = "8098444618", Correo = "servicioalcliente@induveca.com.do." },
+               new Provedores { ProvedorId = 2, Nombre = "Nestle", Direccion = "Carretera nagua", Telefono = "8095882870", Correo = "servicios.consumidor@do.nestle.com." },
+               new Provedores { ProvedorId = 3, Nombre = "Baldom", Direccion = "calle jino negrin", Telefono = "8092002108", Correo = "atencion.consumidor@baldom.net" },
+               new Provedores { ProvedorId = 4, Nombre = "Cerveceria nacional", Direccion = "calle hermana mirabal", Telefono = "8094873200", Correo = "servicioalcliente@CND.com.do." },
+               new Provedores { ProvedorId = 5, Nombre = "Yoma", Direccion = "Avenida libertad", Telefono = "8095884606", Correo = "servicioalcliente@Yoma.com.do." }
+           );
         }
     }
 }
