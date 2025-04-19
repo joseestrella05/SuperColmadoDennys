@@ -41,4 +41,9 @@ public class Productos
     [ForeignKey("Categoria")]
     public int CategoriaId { get; set; }
     public virtual Categoria? Categoria { get; set; }
+
+    [Required(ErrorMessage = "Debe seleccionar una provedor.")]
+    public int ProveedorId { get; set; }
+    [ForeignKey("ProveedorId")]
+    public Provedores? Proveedor { get; set; }
 }
