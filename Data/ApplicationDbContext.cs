@@ -11,8 +11,10 @@ namespace SuperColmadoDennys.Data
         }
         public DbSet<Productos> Productos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
-
         public DbSet<Provedores> Provedores { get; set; }
+        public DbSet<Compras> Compras { get; set; }
+        public DbSet<ComprasDetalles> ComprasDetalles { get; set; }
+        public DbSet<Estados> Estados { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -100,7 +102,15 @@ namespace SuperColmadoDennys.Data
                new Provedores { ProvedorId = 3, Nombre = "Baldom", Direccion = "calle jino negrin", Telefono = "8092002108", Correo = "atencion.consumidor@baldom.net" },
                new Provedores { ProvedorId = 4, Nombre = "Cerveceria nacional", Direccion = "calle hermana mirabal", Telefono = "8094873200", Correo = "servicioalcliente@CND.com.do." },
                new Provedores { ProvedorId = 5, Nombre = "Yoma", Direccion = "Avenida libertad", Telefono = "8095884606", Correo = "servicioalcliente@Yoma.com.do." }
-           );
+            );
+
+            modelBuilder.Entity<Estados>().HasData(
+                new Estados { EstadoId = 1, Nombre = "Pendiente" },
+                new Estados { EstadoId = 2, Nombre = "Completada" },
+                new Estados { EstadoId = 3, Nombre = "Cancelada" }
+            );
+
+
         }
     }
 }
