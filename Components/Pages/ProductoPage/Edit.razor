@@ -4,6 +4,7 @@
 @inject CategoriaService categoriaService
 @inject ToastService toastService
 @inject NavigationManager navigation
+@rendermode InteractiveServer
 
 <PageTitle> Editar Producto</PageTitle>
 <EditForm Model="Producto" OnValidSubmit="Crear">
@@ -88,7 +89,7 @@
             <div class="card-footer text-center mt-3">
                 <button type="button" class="btn btn-outline-primary ml-2" @onclick="Nuevo"><span class="bi bi-plus"></span> Nuevo </button>
                 <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
-                <a type="button" href="/Tecnico/Index/" class="btn btn-outline-danger"><span class="bi bi-arrow-bar-left"></span> Volver </a>
+                <a type="button" href="/Producto/Index/" class="btn btn-outline-danger"><span class="bi bi-arrow-bar-left"></span> Volver </a>
             </div>
         </div>
     </div>
