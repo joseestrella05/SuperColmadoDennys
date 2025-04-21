@@ -16,6 +16,7 @@ public class ProductoService(IDbContextFactory<ApplicationDbContext> contextFact
         return await contexto.Productos.AsNoTracking()
             .FirstOrDefaultAsync(t => t.Nombre == nombre);
     }
+    
     public async Task<List<Productos>> ListarProducto()
     {
         using var context = _contextFactory.CreateDbContext();
