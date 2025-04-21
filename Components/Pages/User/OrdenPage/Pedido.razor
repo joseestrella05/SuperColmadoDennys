@@ -1,0 +1,122 @@
+﻿@page "/User/Pedido"
+@inject NavigationManager NavigationManager
+@inject OrdenesService OrderService
+@inject ProductoService productoService
+@rendermode InteractiveServer
+
+<div class="container my-5">
+    <h1 class="text-center mb-4 text-primary fw-bold">Confirmar Tu Pedido</h1>
+
+    <div class="row">
+        <!-- Product List -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Tus Productos</h4>
+                </div>
+                <div class="card-body">
+                    @if (OrderDetails != null && OrderDetails.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in OrderDetails)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><strong>@item.Cantidad</strong> x @item.Producto?.Nombre</span>
+                                    <span class="badge bg-success fs-6">@((item.Precio * item.Cantidad).ToString("C"))</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">No hay productos en tu carrito.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Confirmation -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white text-center">
+                    <h4>Resumen del Pedido</h4>
+                </div>
+                <div class="card-body">
+                    <h3 class="text-success text-center mb-4">
+                        Total: @OrderDetails?.Sum(x => x.Precio * x.Cantidad).ToString("C")
+                    </h3>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary w-100" disabled="@(!OrderDetails.Any())" @onclick="SubmitOrder">
+                            <i class="bi bi-check-circle"></i> Confirmar Pedido
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Ordenes Order { get; set; } = new Ordenes();
+    private List<OrdenItem> OrderDetails { get; set; } = new List<OrdenItem>();
+    private List<ToastMessage> Messages { get; set; } = new List<ToastMessage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadOrderDetailsAsync();
+    }
+
+    private async Task LoadOrderDetailsAsync()
+    {
+        try
+        {
+            OrderDetails = await GetCartDetailsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar detalles: {ex.Message}");
+            Notify(ToastType.Danger, "Error al cargar el pedido.");
+        }
+    }
+
+    
+    private async Task<List<OrdenItem>> GetCartDetailsAsync()
+    {
+        return new List<OrdenItem>(); 
+    }
+
+    private async Task SubmitOrder()
+    {
+        if (!OrderDetails.Any())
+        {
+            Notify(ToastType.Danger, "El carrito está vacío.");
+            return;
+        }
+
+        try
+        {
+            // Save order
+            await OrderService.AddObject(Order);
+            Notify(ToastType.Success, "¡Pedido confirmado con éxito!");
+            await Task.Delay(2000);
+            NavigationManager.NavigateTo("/PizzaYa/Menu");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al confirmar el pedido: {ex.Message}");
+            Notify(ToastType.Danger, "Error al confirmar el pedido.");
+        }
+    }
+
+    private void Notify(ToastType type, string message)
+    {
+        Messages.Add(new ToastMessage
+            {
+                Type = type,
+                Title = "Notificación",
+                Message = message,
+                AutoHide = true,
+                HelpText = DateTime.Now.ToString()
+            });
+    }
+}
