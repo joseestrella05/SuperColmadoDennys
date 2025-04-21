@@ -15,6 +15,8 @@ namespace SuperColmadoDennys.Data
         public DbSet<Compras> Compras { get; set; }
         public DbSet<ComprasDetalles> ComprasDetalles { get; set; }
         public DbSet<Estados> Estados { get; set; }
+        public DbSet<Ordenes> Ordenes { get; set; }
+        public DbSet<OrdenItem> OrdenItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
