@@ -307,8 +307,8 @@ namespace SuperColmadoDennys.Migrations
                     b.Property<int>("ProvedorId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("Total")
+                        .HasColumnType("real");
 
                     b.HasKey("CompraId");
 
@@ -336,8 +336,8 @@ namespace SuperColmadoDennys.Migrations
                     b.Property<int?>("ComprasCompraId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Precio")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("Precio")
+                        .HasColumnType("real");
 
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
@@ -385,6 +385,74 @@ namespace SuperColmadoDennys.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SuperColmadoDennys.Models.OrdenItem", b =>
+                {
+                    b.Property<int>("DetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetalleId"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdenId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Precio")
+                        .HasColumnType("real");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DetalleId");
+
+                    b.HasIndex("OrdenId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("OrdenItems");
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.Ordenes", b =>
+                {
+                    b.Property<int>("OrdenId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrdenId"));
+
+                    b.Property<string>("ClienteId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstadoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("ITBIS")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Monto")
+                        .HasColumnType("real");
+
+                    b.Property<string>("NombreCliente")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OrdenId");
+
+                    b.ToTable("Ordenes");
+                });
+
             modelBuilder.Entity("SuperColmadoDennys.Models.Productos", b =>
                 {
                     b.Property<int>("Id")
@@ -410,6 +478,9 @@ namespace SuperColmadoDennys.Migrations
 
                     b.Property<DateTime?>("FechaVencimiento")
                         .HasColumnType("datetime2");
+
+                    b.Property<float>("ITBIS")
+                        .HasColumnType("real");
 
                     b.Property<string>("ImagenUrl")
                         .IsRequired()
@@ -599,6 +670,25 @@ namespace SuperColmadoDennys.Migrations
                     b.Navigation("Productos");
                 });
 
+            modelBuilder.Entity("SuperColmadoDennys.Models.OrdenItem", b =>
+                {
+                    b.HasOne("SuperColmadoDennys.Models.Ordenes", "Orden")
+                        .WithMany("OrdenesDetalle")
+                        .HasForeignKey("OrdenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SuperColmadoDennys.Models.Productos", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Orden");
+
+                    b.Navigation("Producto");
+                });
+
             modelBuilder.Entity("SuperColmadoDennys.Models.Productos", b =>
                 {
                     b.HasOne("SuperColmadoDennys.Models.Categoria", "Categoria")
@@ -626,6 +716,11 @@ namespace SuperColmadoDennys.Migrations
             modelBuilder.Entity("SuperColmadoDennys.Models.Compras", b =>
                 {
                     b.Navigation("ComprasDetalles");
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.Ordenes", b =>
+                {
+                    b.Navigation("OrdenesDetalle");
                 });
 #pragma warning restore 612, 618
         }
