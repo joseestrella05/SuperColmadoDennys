@@ -12,7 +12,7 @@ public class Compras
     public DateTime Fecha { get; set; } = DateTime.Now;
 
     [Required(ErrorMessage = "Campo obrigatório")]
-    public decimal Total { get; set; }
+    public float Total { get; set; }
 
     [Required(ErrorMessage = "Campo obrigatório")]
     public string? Descripcion { get; set; }
