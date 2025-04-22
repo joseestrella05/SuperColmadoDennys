@@ -1,8 +1,10 @@
 ﻿@page "/Provedores/Index"
+@using Microsoft.AspNetCore.Authorization
 @inject ProvedoreServices provedoresService
 @rendermode InteractiveServer
 @inject NavigationManager navigation
 @inject ToastService toastService
+@attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>Provedores</PageTitle>
 <div class="row" style="background-color:white; padding:10px; margin:10px;">
