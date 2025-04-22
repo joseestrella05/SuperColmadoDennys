@@ -1,6 +1,8 @@
 ﻿@page "/Provedores/Create"
+@using Microsoft.AspNetCore.Authorization
 @inject ProvedoreServices provedoresService
 @inject NavigationManager navigation
+@attribute [Authorize(Roles = "Admin")]
 
 <EditForm Model="Provedor" OnValidSubmit="Crear">
     <DataAnnotationsValidator />
