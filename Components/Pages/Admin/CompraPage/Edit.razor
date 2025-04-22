@@ -1,9 +1,12 @@
 ﻿@page "/Compra/Edit/{CompraId:int}"
+@using Microsoft.AspNetCore.Authorization
 @inject ProvedoreServices provedoresService
 @inject CompraServices compraService
 @inject EstadoServices estadoServices
 @inject ProductoService productoService
 @inject NavigationManager navigation
+
+@attribute [Authorize(Roles = "Admin")]
 
 <EditForm Model="Compra" OnValidSubmit="Guardar">
 	<DataAnnotationsValidator />

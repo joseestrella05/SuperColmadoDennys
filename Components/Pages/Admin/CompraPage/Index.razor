@@ -1,10 +1,13 @@
 ﻿@page "/Compra/Index"
+@using Microsoft.AspNetCore.Authorization
 @inject ProvedoreServices provedoresService
 @inject CompraServices compraService
 @inject EstadoServices estadoService
 @rendermode InteractiveServer
 @inject NavigationManager navigation
 @inject ToastService toastService
+@attribute [Authorize(Roles = "Admin")]
+
 
 <PageTitle>Compra</PageTitle>
 <div class="row" style="background-color:white; padding:10px; margin:10px;">
