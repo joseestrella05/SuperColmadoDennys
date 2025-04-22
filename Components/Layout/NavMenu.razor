@@ -12,58 +12,70 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/Producto/Index">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
-            </NavLink>
-        </div>
-
         <AuthorizeView>
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+               
+                    <!-- Enlace a Home -->
+                    <NavLink class="nav-item px-3" href="/">
+                        <i class="bi bi-house-door me-1"></i> Home
                     </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <form action="Account/Logout" method="post">
-                        <AntiforgeryToken />
-                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                        <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
-                        </button>
+
+                    <!-- Enlace a Menú -->
+                    <NavLink class="nav-item px-3" href="/Productos/Orden">
+                        <i class="bi bi-list-ul me-1"></i> Productos
+                    </NavLink>
+
+                    <!-- Opciones de administrador -->
+                    <AuthorizeView Roles="Admin">
+                        <Authorized Context="Admin">
+                            <!-- Inventario -->
+                            <NavLink class="nav-item px-3" href="/Producto/Index">
+                                <i class="bi bi-box-seam me-1"></i> Inventario
+                            </NavLink>
+                            <NavLink class="nav-item px-3" href="/Compra/Index">
+                                <i class="bi bi-box-seam me-1"></i> Compras
+                            </NavLink>
+
+
+                        </Authorized>
+                    </AuthorizeView>
+
+                    <!-- Ordenes -->
+                    <NavLink class="nav-item px-3" href="/Pedido/Index">
+                        <i class="bi bi-receipt me-1"></i> Pedidos
+                    </NavLink>
+
+                    <!-- Botón para salir -->
+                    <form action="Account/Logout" method="post" class="d-inline">
+                        <div class="nav-item px-3">
+                            <AntiforgeryToken />
+                            <input type="hidden" name="ReturnUrl" />
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-box-arrow-right me-1"></i> Salir
+                            </button>
+                        </div>
                     </form>
-                </div>
+                
             </Authorized>
+
+            <!-- Opciones para usuarios no autenticados -->
             <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
+               
+                    <!-- Enlace a Home -->
+                    <NavLink class="nav-item px-3" href="/">
+                        <i class="bi bi-house-door me-1"></i> Home
                     </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+
+                    <!-- Enlace a Login -->
+                    <NavLink class="nav-item px-3" href="Account/Login">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Login
                     </NavLink>
-                </div>
+
+                    <!-- Enlace a Registro -->
+                    <NavLink class="nav-item px-3" href="Account/Register">
+                        <i class="bi bi-pencil-square me-1"></i> Register
+                    </NavLink>
+                    
             </NotAuthorized>
         </AuthorizeView>
     </nav>
