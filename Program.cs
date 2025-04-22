@@ -49,6 +49,7 @@ builder.Services.AddScoped<CompraServices>();
 builder.Services.AddScoped<EstadoServices>();
 builder.Services.AddScoped<OrdenesService>();
 builder.Services.AddScoped<UsersServices>();
+builder.Services.AddScoped<CartService>();
 
 var app = builder.Build();
 
