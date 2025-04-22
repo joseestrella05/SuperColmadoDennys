@@ -1,13 +1,82 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <AuthorizeView>
+                <Authorized>
+
+                    <!-- Enlace a Home -->
+                    <NavLink class="nav-item px-3" href="/">
+                        <i class="bi bi-house-door me-1"></i> Home
+                    </NavLink>
+
+                    <!-- Enlace a Menú -->
+                    <NavLink class="nav-item px-3" href="/Productos/Orden">
+                        <i class="bi bi-list-ul me-1"></i> Productos
+                    </NavLink>
+
+                    <!-- Opciones de administrador -->
+                    <AuthorizeView Roles="Admin">
+                        <Authorized Context="Admin">
+                            <!-- Inventario -->
+                            <NavLink class="nav-item px-3" href="/Producto/Index">
+                                <i class="bi bi-box-seam me-1"></i> Inventario
+                            </NavLink>
+                            <NavLink class="nav-item px-3" href="/Compra/Index">
+                                <i class="bi bi-box-seam me-1"></i> Compras
+                            </NavLink>
+                             <NavLink class="nav-item px-3" href="/Provedore/Index">
+                                <i class="bi bi-box-seam me-1"></i> Compras
+                            </NavLink>
+
+
+
+                        </Authorized>
+                    </AuthorizeView>
+
+                    <!-- Ordenes -->
+                    <NavLink class="nav-item px-3" href="/Pedido/Index">
+                        <i class="bi bi-receipt me-1"></i> Pedidos
+                    </NavLink>
+
+                    <!-- Botón para salir -->
+                    <form action="Account/Logout" method="post" class="d-inline">
+                        <div class="nav-item px-3">
+                            <AntiforgeryToken />
+                            <input type="hidden" name="ReturnUrl" />
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-box-arrow-right me-1"></i> Salir
+                            </button>
+                        </div>
+                    </form>
+
+                </Authorized>
+
+                <!-- Opciones para usuarios no autenticados -->
+                <NotAuthorized>
+
+                    <!-- Enlace a Home -->
+                    <NavLink class="nav-item px-3" href="/">
+                        <i class="bi bi-house-door me-1"></i> Home
+                    </NavLink>
+
+                    <!-- Enlace a Login -->
+                    <NavLink class="nav-item px-3" href="Account/Login">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                    </NavLink>
+
+                    <!-- Enlace a Registro -->
+                    <NavLink class="nav-item px-3" href="Account/Register">
+                        <i class="bi bi-pencil-square me-1"></i> Register
+                    </NavLink>
+
+
+
+                </NotAuthorized>
+            </AuthorizeView>
+
         </div>
 
         <article class="content px-4">
