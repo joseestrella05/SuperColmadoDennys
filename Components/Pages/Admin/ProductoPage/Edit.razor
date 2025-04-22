@@ -1,4 +1,5 @@
 ﻿@page "/Producto/Edit/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
 @inject NavigationManager NavigationManager
 @inject ProductoService productoService
 @inject CategoriaService categoriaService
@@ -6,6 +7,8 @@
 @inject ToastService toastService
 @inject NavigationManager navigation
 @rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "Admin")]
 
 <PageTitle> Editar Producto</PageTitle>
 <EditForm Model="Producto" OnValidSubmit="Crear">
