@@ -1,10 +1,11 @@
 ﻿@page "/Producto/Index"
+@using Microsoft.AspNetCore.Authorization
 @inject NavigationManager NavigationManager
 @inject ProductoService productoService
 @inject CategoriaService categoriaService
 @inject ToastService toastService
 @rendermode InteractiveServer
-
+@attribute [Authorize(Roles = "Admin")]
 <PageTitle>Producto</PageTitle>
 <div class="container">
     <div class="card shadow-lg">

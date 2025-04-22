@@ -1,0 +1,322 @@
+﻿@page "/Productos/Orden"
+   @inject ProductoService productosService
+   @inject CartService CartService
+   @inject IJSRuntime JS
+   @inject NavigationManager navigation
+   @rendermode InteractiveServer
+
+<PageTitle>Producto</PageTitle>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 300px;
+        z-index: 1000;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-header {
+        border-radius: 10px 10px 0 0;
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .btn-primary, .btn-success, .btn-danger, .btn-secondary {
+        border-radius: 20px;
+        transition: background-color 0.3s;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+    .category-nav {
+        background-color: #fff;
+        padding: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+        .category-nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+            .category-nav a:hover {
+                color: #0056b3;
+            }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .modal-img {
+        max-height: 300px;
+        object-fit: cover;
+    }
+</style>
+
+<!-- Sidebar (Cart) -->
+<div class="sidebar">
+    <div class="card">
+        <div class="card-header text-center bg-primary text-white">
+            <strong>Tu Carrito (@CartItems.Count)</strong>
+        </div>
+        <div class="card-body">
+            @if (!CartItems.Any())
+            {
+                <p class="text-center text-muted">No hay productos en tu carrito.</p>
+            }
+            else
+            {
+                @foreach (var detalle in CartItems)
+                {
+                    <div class="d-flex align-items-center my-2">
+                        @if (detalle.Producto != null)
+                        {
+                            <img src="@detalle.Producto.ImagenUrl" alt="Producto" class="img-thumbnail me-2" style="width: 60px; height: 60px;">
+                        }
+                        <div class="flex-grow-1">
+                            <p class="mb-1">@detalle.Producto.Nombre</p>
+                            <p class="text-muted small mb-0">Cantidad: @detalle.Cantidad</p>
+                        </div>
+                        <button class="btn btn-sm btn-danger" @onclick="() => EliminarProducto(detalle)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                }
+            }
+        </div>
+        <div class="card-footer text-center">
+            <div class="d-flex justify-content-between">
+                <span><strong>Total:</strong></span>
+                <span><strong>@CartService.GetTotal().ToString("C")</strong></span>
+            </div>
+            <button class="btn btn-success mt-3 w-100" @onclick="ContinuarPedido">
+                Continuar Pedido
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="text-center mt-4">
+    <h1><strong>Producto</strong></h1>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        @if (ListaProductos == null)
+        {
+            <p>Cargando productos...</p>
+        }
+        else if (!ListaProductos.Any())
+        {
+            <p>No hay productos disponibles.</p>
+        }
+        else
+        {
+            var categorias = new Dictionary<int, string>
+        {
+        { 1, "Lácteos" },
+        { 2, "Panadería" },
+        { 3, "Enlatados" },
+        { 4, "Bebidas" },
+        { 5, "Alcohol" }
+        };
+
+            var productosPorCategoria = ListaProductos.GroupBy(p => p.CategoriaId);
+
+            foreach (var grupo in productosPorCategoria)
+            {
+                <h2 class="mt-3">@(categorias.ContainsKey(grupo.Key) ? categorias[grupo.Key] : "Sin Categoría")</h2>
+                <div class="row">
+                    @foreach (var producto in grupo)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <img src="@producto.ImagenUrl" class="card-img-top" alt="@producto.Nombre">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">@producto.Nombre</h5>
+                                    <p class="card-text text-muted">@producto.Descripcion</p>
+                                    <p class="card-text"><strong>@producto.Precio.ToString("C")</strong></p>
+                                    <button class="btn btn-primary" @onclick="() => MostrarModalProducto(producto)">Añadir</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Modal del Producto -->
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModal1Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@productoSeleccionado.Nombre</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CerrarModal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="@productoSeleccionado.ImagenUrl" class="img-fluid mb-3 modal-img" alt="Producto">
+                <p>@productoSeleccionado.Descripcion</p>
+                <p><strong>Precio: @productoSeleccionado.Precio.ToString("C")</strong></p>
+                <div class="d-flex justify-content-center align-items-center">
+                    <button class="btn btn-sm btn-secondary me-2" @onclick="DecrementCount">-</button>
+                    <span>@currentCount</span>
+                    <button class="btn btn-sm btn-secondary ms-2" @onclick="IncrementCount">+</button>
+                </div>
+                <button class="btn btn-success mt-3" @onclick="() => AgregarProducto(productoSeleccionado)" data-bs-dismiss="modal">Agregar al Carrito</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Productos> ListaProductos = new List<Productos>();
+    private List<ToastMessage> Mensaje = new List<ToastMessage>();
+    private Productos productoSeleccionado { get; set; } = new Productos();
+    private bool modalProducto { get; set; }
+    private float Precio { get; set; }
+    private int currentCount = 1;
+    private List<OrdenItem> CartItems => CartService.GetCart();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaProductos = await productosService.ListarProducto();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (modalProducto)
+        {
+            await JS.InvokeVoidAsync("eval", "new bootstrap.Modal(document.getElementById('exampleModal1')).show()");
+        }
+    }
+
+    private void IncrementCount()
+    {
+        currentCount++;
+        if (productoSeleccionado.Stock <= 0)
+        {
+            Notificacion(ToastType.Warning, "No hay stock disponible.");
+            currentCount = 1;
+            Precio = productoSeleccionado.Precio;
+        }
+        else if (currentCount > productoSeleccionado.Stock)
+        {
+            Notificacion(ToastType.Warning, "No hay suficiente stock.");
+            currentCount = productoSeleccionado.Stock;
+            Precio = productoSeleccionado.Precio * currentCount;
+        }
+        else
+        {
+            Precio = productoSeleccionado.Precio * currentCount;
+        }
+    }
+
+    private void DecrementCount()
+    {
+        currentCount--;
+        if (currentCount < 1)
+        {
+            currentCount = 1;
+            Notificacion(ToastType.Warning, "La cantidad mínima es 1.");
+        }
+        Precio = productoSeleccionado.Precio * currentCount;
+    }
+
+    public async Task AgregarProducto(Productos producto)
+    {
+        if (currentCount <= 0 || currentCount > producto.Stock)
+        {
+            Notificacion(ToastType.Warning, "Cantidad inválida.");
+            return;
+        }
+
+        CartService.AddToCart(producto, currentCount);
+        Notificacion(ToastType.Success, $"Producto {producto.Nombre} agregado al carrito.");
+        await CerrarModal();
+    }
+
+    public void EliminarProducto(OrdenItem detalle)
+    {
+        CartService.RemoveFromCart(detalle.ProductoId);
+        Notificacion(ToastType.Danger, $"Producto {detalle.Producto.Nombre} eliminado del carrito.");
+    }
+
+    public async Task CerrarModal()
+    {
+        modalProducto = false;
+        currentCount = 1;
+        Precio = 0;
+        await JS.InvokeVoidAsync("eval", "new bootstrap.Modal(document.getElementById('exampleModal1')).hide()");
+    }
+
+    private async Task MostrarModalProducto(Productos producto)
+    {
+        modalProducto = true;
+        productoSeleccionado = producto;
+        currentCount = 1;
+        Precio = productoSeleccionado.Precio;
+    }
+
+    private async Task ContinuarPedido()
+    {
+        if (!CartItems.Any())
+        {
+            Notificacion(ToastType.Danger, "El carrito está vacío.");
+            return;
+        }
+        navigation.NavigateTo("/User/Pedido");
+    }
+
+    public void Notificacion(ToastType toastType, string message) => Mensaje.Add(CrearNotificacion(toastType, message));
+
+    private ToastMessage CrearNotificacion(ToastType toastType, string message)
+        => new ToastMessage
+            {
+                Type = toastType,
+                Title = "Notificación",
+                AutoHide = true,
+                HelpText = $"{DateTime.Now}",
+                Message = message
+            };
+   }

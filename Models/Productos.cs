@@ -18,7 +18,7 @@ public class Productos
 
     [Required(ErrorMessage = "El precio es obligatorio.")]
     [Range(0.01, double.MaxValue)]
-    public decimal Precio { get; set; }
+    public float Precio { get; set; }
 
     [Required(ErrorMessage = "El stock es obligatorio.")]
     [Range(0, int.MaxValue)]
@@ -41,4 +41,11 @@ public class Productos
     [ForeignKey("Categoria")]
     public int CategoriaId { get; set; }
     public virtual Categoria? Categoria { get; set; }
+
+    [Required(ErrorMessage = "Debe seleccionar una provedor.")]
+    public int ProveedorId { get; set; }
+    [ForeignKey("ProveedorId")]
+    public Provedores? Proveedor { get; set; }
+
+    public float ITBIS { get; set; } = 0.18f; 
 }

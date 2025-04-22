@@ -68,6 +68,55 @@ namespace SuperColmadoDennys.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Estados",
+                columns: table => new
+                {
+                    EstadoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Estados", x => x.EstadoId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ordenes",
+                columns: table => new
+                {
+                    OrdenId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClienteId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NombreCliente = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EstadoId = table.Column<int>(type: "int", nullable: false),
+                    Observacion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Monto = table.Column<float>(type: "real", nullable: false),
+                    ITBIS = table.Column<float>(type: "real", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ordenes", x => x.OrdenId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Provedores",
+                columns: table => new
+                {
+                    ProvedorId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Correo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Provedores", x => x.ProvedorId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -174,6 +223,35 @@ namespace SuperColmadoDennys.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Compras",
+                columns: table => new
+                {
+                    CompraId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Total = table.Column<float>(type: "real", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EstadoId = table.Column<int>(type: "int", nullable: false),
+                    ProvedorId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Compras", x => x.CompraId);
+                    table.ForeignKey(
+                        name: "FK_Compras_Estados_EstadoId",
+                        column: x => x.EstadoId,
+                        principalTable: "Estados",
+                        principalColumn: "EstadoId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Compras_Provedores_ProvedorId",
+                        column: x => x.ProvedorId,
+                        principalTable: "Provedores",
+                        principalColumn: "ProvedorId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Productos",
                 columns: table => new
                 {
@@ -187,7 +265,9 @@ namespace SuperColmadoDennys.Migrations
                     FechaVencimiento = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EstaActivo = table.Column<bool>(type: "bit", nullable: false),
                     ImagenUrl = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    CategoriaId = table.Column<int>(type: "int", nullable: false)
+                    CategoriaId = table.Column<int>(type: "int", nullable: false),
+                    ProveedorId = table.Column<int>(type: "int", nullable: false),
+                    ITBIS = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -198,6 +278,68 @@ namespace SuperColmadoDennys.Migrations
                         principalTable: "Categorias",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Productos_Provedores_ProveedorId",
+                        column: x => x.ProveedorId,
+                        principalTable: "Provedores",
+                        principalColumn: "ProvedorId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComprasDetalles",
+                columns: table => new
+                {
+                    DetalleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompraId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    Precio = table.Column<float>(type: "real", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    ComprasCompraId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComprasDetalles", x => x.DetalleId);
+                    table.ForeignKey(
+                        name: "FK_ComprasDetalles_Compras_ComprasCompraId",
+                        column: x => x.ComprasCompraId,
+                        principalTable: "Compras",
+                        principalColumn: "CompraId");
+                    table.ForeignKey(
+                        name: "FK_ComprasDetalles_Productos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "Productos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrdenItems",
+                columns: table => new
+                {
+                    DetalleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrdenId = table.Column<int>(type: "int", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    Precio = table.Column<float>(type: "real", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrdenItems", x => x.DetalleId);
+                    table.ForeignKey(
+                        name: "FK_OrdenItems_Ordenes_OrdenId",
+                        column: x => x.OrdenId,
+                        principalTable: "Ordenes",
+                        principalColumn: "OrdenId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrdenItems_Productos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "Productos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -213,21 +355,25 @@ namespace SuperColmadoDennys.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Productos",
-                columns: new[] { "Id", "CategoriaId", "CodigoBarras", "Descripcion", "EstaActivo", "FechaVencimiento", "ImagenUrl", "Nombre", "Precio", "Stock" },
+                table: "Estados",
+                columns: new[] { "EstadoId", "Nombre" },
                 values: new object[,]
                 {
-                    { 1, 1, "1234567890123", null, true, null, "/Imagen/LecheEntera.png", "Leche Entera", 200m, 50 },
-                    { 2, 1, "1234567890124", null, true, null, "/Imagen/YogurNatural.jpg", "Yogur Natural", 300m, 100 },
-                    { 3, 2, "9876543210987", null, true, null, "/Imagen/PanIntegral.jpg", "Pan Integral", 60m, 30 },
-                    { 4, 2, "9876543210988", null, true, null, "/Imagen/Croissants.jpg", "Croissant", 300m, 40 },
-                    { 5, 3, "5555555555555", null, true, new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "/Imagen/Atun.jpg", "Atún en lata", 400m, 80 },
-                    { 6, 3, "5555555555556", null, true, new DateTime(2026, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "/Imagen/Sardina.jpg", "Sardinas en tomate", 125m, 60 },
-                    { 7, 3, "5555555555557", null, true, new DateTime(2027, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "/Imagen/Maiz.jpg", "Maíz enlatado", 70m, 90 },
-                    { 8, 4, "1111111111111", null, true, null, "/Imagen/AguaSaratoga.jpg", "Agua Saratoga 1L", 500m, 200 },
-                    { 9, 4, "1111111111112", null, true, null, "/Imagen/Cocacola.jpg", "Coca Cola 2L", 80m, 150 },
-                    { 10, 5, "2222222222222", null, true, null, "/Imagen/Brugar.jpg", "Brugal ExtraViejo 700ml", 700m, 100 },
-                    { 11, 5, "2222222222223", null, true, null, "/Imagen/TripleReserva.jpg", "Brugal Triple Reserva", 1060m, 100 }
+                    { 1, "Pendiente" },
+                    { 2, "Completada" },
+                    { 3, "Cancelada" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Provedores",
+                columns: new[] { "ProvedorId", "Correo", "Direccion", "Nombre", "Telefono" },
+                values: new object[,]
+                {
+                    { 1, "servicioalcliente@induveca.com.do.", "calle jino negrin", "Induveca", "8098444618" },
+                    { 2, "servicios.consumidor@do.nestle.com.", "Carretera nagua", "Nestle", "8095882870" },
+                    { 3, "atencion.consumidor@baldom.net", "calle jino negrin", "Baldom", "8092002108" },
+                    { 4, "servicioalcliente@CND.com.do.", "calle hermana mirabal", "Cerveceria nacional", "8094873200" },
+                    { 5, "servicioalcliente@Yoma.com.do.", "Avenida libertad", "Yoma", "8095884606" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -276,6 +422,36 @@ namespace SuperColmadoDennys.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Compras_EstadoId",
+                table: "Compras",
+                column: "EstadoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Compras_ProvedorId",
+                table: "Compras",
+                column: "ProvedorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ComprasDetalles_ComprasCompraId",
+                table: "ComprasDetalles",
+                column: "ComprasCompraId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ComprasDetalles_ProductoId",
+                table: "ComprasDetalles",
+                column: "ProductoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenItems_OrdenId",
+                table: "OrdenItems",
+                column: "OrdenId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenItems_ProductoId",
+                table: "OrdenItems",
+                column: "ProductoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Productos_CategoriaId",
                 table: "Productos",
                 column: "CategoriaId");
@@ -285,6 +461,11 @@ namespace SuperColmadoDennys.Migrations
                 table: "Productos",
                 column: "CodigoBarras",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Productos_ProveedorId",
+                table: "Productos",
+                column: "ProveedorId");
         }
 
         /// <inheritdoc />
@@ -306,7 +487,10 @@ namespace SuperColmadoDennys.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Productos");
+                name: "ComprasDetalles");
+
+            migrationBuilder.DropTable(
+                name: "OrdenItems");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -315,7 +499,22 @@ namespace SuperColmadoDennys.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Compras");
+
+            migrationBuilder.DropTable(
+                name: "Ordenes");
+
+            migrationBuilder.DropTable(
+                name: "Productos");
+
+            migrationBuilder.DropTable(
+                name: "Estados");
+
+            migrationBuilder.DropTable(
                 name: "Categorias");
+
+            migrationBuilder.DropTable(
+                name: "Provedores");
         }
     }
 }

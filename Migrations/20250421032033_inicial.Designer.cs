@@ -12,7 +12,7 @@ using SuperColmadoDennys.Data;
 namespace SuperColmadoDennys.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250419155446_inicial")]
+    [Migration("20250421032033_inicial")]
     partial class inicial
     {
         /// <inheritdoc />
@@ -289,6 +289,173 @@ namespace SuperColmadoDennys.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SuperColmadoDennys.Models.Compras", b =>
+                {
+                    b.Property<int>("CompraId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompraId"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstadoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProvedorId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Total")
+                        .HasColumnType("real");
+
+                    b.HasKey("CompraId");
+
+                    b.HasIndex("EstadoId");
+
+                    b.HasIndex("ProvedorId");
+
+                    b.ToTable("Compras");
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.ComprasDetalles", b =>
+                {
+                    b.Property<int>("DetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetalleId"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompraId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ComprasCompraId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Precio")
+                        .HasColumnType("real");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DetalleId");
+
+                    b.HasIndex("ComprasCompraId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("ComprasDetalles");
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.Estados", b =>
+                {
+                    b.Property<int>("EstadoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstadoId"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EstadoId");
+
+                    b.ToTable("Estados");
+
+                    b.HasData(
+                        new
+                        {
+                            EstadoId = 1,
+                            Nombre = "Pendiente"
+                        },
+                        new
+                        {
+                            EstadoId = 2,
+                            Nombre = "Completada"
+                        },
+                        new
+                        {
+                            EstadoId = 3,
+                            Nombre = "Cancelada"
+                        });
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.OrdenItem", b =>
+                {
+                    b.Property<int>("DetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetalleId"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdenId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Precio")
+                        .HasColumnType("real");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DetalleId");
+
+                    b.HasIndex("OrdenId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("OrdenItems");
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.Ordenes", b =>
+                {
+                    b.Property<int>("OrdenId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrdenId"));
+
+                    b.Property<string>("ClienteId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstadoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("ITBIS")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Monto")
+                        .HasColumnType("real");
+
+                    b.Property<string>("NombreCliente")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OrdenId");
+
+                    b.ToTable("Ordenes");
+                });
+
             modelBuilder.Entity("SuperColmadoDennys.Models.Productos", b =>
                 {
                     b.Property<int>("Id")
@@ -315,6 +482,9 @@ namespace SuperColmadoDennys.Migrations
                     b.Property<DateTime?>("FechaVencimiento")
                         .HasColumnType("datetime2");
 
+                    b.Property<float>("ITBIS")
+                        .HasColumnType("real");
+
                     b.Property<string>("ImagenUrl")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -328,6 +498,9 @@ namespace SuperColmadoDennys.Migrations
                     b.Property<decimal>("Precio")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ProveedorId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
@@ -339,132 +512,79 @@ namespace SuperColmadoDennys.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Productos_CodigoBarras");
 
+                    b.HasIndex("ProveedorId");
+
                     b.ToTable("Productos", (string)null);
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.Provedores", b =>
+                {
+                    b.Property<int>("ProvedorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProvedorId"));
+
+                    b.Property<string>("Correo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProvedorId");
+
+                    b.ToTable("Provedores");
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CategoriaId = 1,
-                            CodigoBarras = "1234567890123",
-                            EstaActivo = true,
-                            ImagenUrl = "/Imagen/LecheEntera.png",
-                            Nombre = "Leche Entera",
-                            Precio = 200m,
-                            Stock = 50
+                            ProvedorId = 1,
+                            Correo = "servicioalcliente@induveca.com.do.",
+                            Direccion = "calle jino negrin",
+                            Nombre = "Induveca",
+                            Telefono = "8098444618"
                         },
                         new
                         {
-                            Id = 2,
-                            CategoriaId = 1,
-                            CodigoBarras = "1234567890124",
-                            EstaActivo = true,
-                            ImagenUrl = "/Imagen/YogurNatural.jpg",
-                            Nombre = "Yogur Natural",
-                            Precio = 300m,
-                            Stock = 100
+                            ProvedorId = 2,
+                            Correo = "servicios.consumidor@do.nestle.com.",
+                            Direccion = "Carretera nagua",
+                            Nombre = "Nestle",
+                            Telefono = "8095882870"
                         },
                         new
                         {
-                            Id = 3,
-                            CategoriaId = 2,
-                            CodigoBarras = "9876543210987",
-                            EstaActivo = true,
-                            ImagenUrl = "/Imagen/PanIntegral.jpg",
-                            Nombre = "Pan Integral",
-                            Precio = 60m,
-                            Stock = 30
+                            ProvedorId = 3,
+                            Correo = "atencion.consumidor@baldom.net",
+                            Direccion = "calle jino negrin",
+                            Nombre = "Baldom",
+                            Telefono = "8092002108"
                         },
                         new
                         {
-                            Id = 4,
-                            CategoriaId = 2,
-                            CodigoBarras = "9876543210988",
-                            EstaActivo = true,
-                            ImagenUrl = "/Imagen/Croissants.jpg",
-                            Nombre = "Croissant",
-                            Precio = 300m,
-                            Stock = 40
+                            ProvedorId = 4,
+                            Correo = "servicioalcliente@CND.com.do.",
+                            Direccion = "calle hermana mirabal",
+                            Nombre = "Cerveceria nacional",
+                            Telefono = "8094873200"
                         },
                         new
                         {
-                            Id = 5,
-                            CategoriaId = 3,
-                            CodigoBarras = "5555555555555",
-                            EstaActivo = true,
-                            FechaVencimiento = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ImagenUrl = "/Imagen/Atun.jpg",
-                            Nombre = "Atún en lata",
-                            Precio = 400m,
-                            Stock = 80
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CategoriaId = 3,
-                            CodigoBarras = "5555555555556",
-                            EstaActivo = true,
-                            FechaVencimiento = new DateTime(2026, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ImagenUrl = "/Imagen/Sardina.jpg",
-                            Nombre = "Sardinas en tomate",
-                            Precio = 125m,
-                            Stock = 60
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CategoriaId = 3,
-                            CodigoBarras = "5555555555557",
-                            EstaActivo = true,
-                            FechaVencimiento = new DateTime(2027, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ImagenUrl = "/Imagen/Maiz.jpg",
-                            Nombre = "Maíz enlatado",
-                            Precio = 70m,
-                            Stock = 90
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CategoriaId = 4,
-                            CodigoBarras = "1111111111111",
-                            EstaActivo = true,
-                            ImagenUrl = "/Imagen/AguaSaratoga.jpg",
-                            Nombre = "Agua Saratoga 1L",
-                            Precio = 500m,
-                            Stock = 200
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CategoriaId = 4,
-                            CodigoBarras = "1111111111112",
-                            EstaActivo = true,
-                            ImagenUrl = "/Imagen/Cocacola.jpg",
-                            Nombre = "Coca Cola 2L",
-                            Precio = 80m,
-                            Stock = 150
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CategoriaId = 5,
-                            CodigoBarras = "2222222222222",
-                            EstaActivo = true,
-                            ImagenUrl = "/Imagen/Brugar.jpg",
-                            Nombre = "Brugal ExtraViejo 700ml",
-                            Precio = 700m,
-                            Stock = 100
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CategoriaId = 5,
-                            CodigoBarras = "2222222222223",
-                            EstaActivo = true,
-                            ImagenUrl = "/Imagen/TripleReserva.jpg",
-                            Nombre = "Brugal Triple Reserva",
-                            Precio = 1060m,
-                            Stock = 100
+                            ProvedorId = 5,
+                            Correo = "servicioalcliente@Yoma.com.do.",
+                            Direccion = "Avenida libertad",
+                            Nombre = "Yoma",
+                            Telefono = "8095884606"
                         });
                 });
 
@@ -519,6 +639,59 @@ namespace SuperColmadoDennys.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SuperColmadoDennys.Models.Compras", b =>
+                {
+                    b.HasOne("SuperColmadoDennys.Models.Estados", "Estado")
+                        .WithMany()
+                        .HasForeignKey("EstadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SuperColmadoDennys.Models.Provedores", "Provedor")
+                        .WithMany()
+                        .HasForeignKey("ProvedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estado");
+
+                    b.Navigation("Provedor");
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.ComprasDetalles", b =>
+                {
+                    b.HasOne("SuperColmadoDennys.Models.Compras", null)
+                        .WithMany("ComprasDetalles")
+                        .HasForeignKey("ComprasCompraId");
+
+                    b.HasOne("SuperColmadoDennys.Models.Productos", "Productos")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Productos");
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.OrdenItem", b =>
+                {
+                    b.HasOne("SuperColmadoDennys.Models.Ordenes", "Orden")
+                        .WithMany("OrdenesDetalle")
+                        .HasForeignKey("OrdenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SuperColmadoDennys.Models.Productos", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Orden");
+
+                    b.Navigation("Producto");
+                });
+
             modelBuilder.Entity("SuperColmadoDennys.Models.Productos", b =>
                 {
                     b.HasOne("SuperColmadoDennys.Models.Categoria", "Categoria")
@@ -527,12 +700,30 @@ namespace SuperColmadoDennys.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("SuperColmadoDennys.Models.Provedores", "Proveedor")
+                        .WithMany()
+                        .HasForeignKey("ProveedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Categoria");
+
+                    b.Navigation("Proveedor");
                 });
 
             modelBuilder.Entity("SuperColmadoDennys.Models.Categoria", b =>
                 {
                     b.Navigation("Productos");
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.Compras", b =>
+                {
+                    b.Navigation("ComprasDetalles");
+                });
+
+            modelBuilder.Entity("SuperColmadoDennys.Models.Ordenes", b =>
+                {
+                    b.Navigation("OrdenesDetalle");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,186 @@
+﻿@page "/User/Pedido"
+   @inject NavigationManager NavigationManager
+   @inject OrdenesService OrderService
+   @inject ProductoService productoService
+   @inject CartService CartService
+   @rendermode InteractiveServer
+   @using Microsoft.EntityFrameworkCore
+
+<div class="container my-5">
+    <h1 class="text-center mb-4 text-primary fw-bold">Confirmar Tu Pedido</h1>
+
+    <div class="row">
+        <!-- Customer Information -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white text-center">
+                    <h4>Información del Cliente</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="nombreCliente" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombreCliente" @bind="Order.NombreCliente" placeholder="Ingrese su nombre" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" @bind="Order.Telefono" placeholder="Ingrese su teléfono" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="observacion" class="form-label">Observaciones</label>
+                        <textarea class="form-control" id="observacion" @bind="Order.Observacion" placeholder="Notas adicionales"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product List -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Tus Productos</h4>
+                </div>
+                <div class="card-body">
+                    @if (OrderDetails != null && OrderDetails.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in OrderDetails)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><strong>@item.Cantidad</strong> x @item.Producto?.Nombre</span>
+                                    <span class="badge bg-success fs-6">@((item.Precio * item.Cantidad).ToString("C"))</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">No hay productos en tu carrito.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Confirmation -->
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white text-center">
+                    <h4>Resumen del Pedido</h4>
+                </div>
+                <div class="card-body">
+                    <h3 class="text-success text-center mb-4">
+                        Total: @OrderDetails?.Sum(x => x.Precio * x.Cantidad).ToString("C")
+                    </h3>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary w-100" disabled="@(!OrderDetails.Any() || string.IsNullOrEmpty(Order.NombreCliente))" @onclick="SubmitOrder">
+                            <i class="bi bi-check-circle"></i> Confirmar Pedido
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Ordenes Order { get; set; } = new Ordenes();
+    private List<OrdenItem> OrderDetails { get; set; } = new List<OrdenItem>();
+    private List<ToastMessage> Messages { get; set; } = new List<ToastMessage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadOrderDetailsAsync();
+    }
+
+    private async Task LoadOrderDetailsAsync()
+    {
+        try
+        {
+            OrderDetails = await GetCartDetailsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar detalles: {ex.Message}");
+            Notify(ToastType.Danger, "Error al cargar el pedido.");
+        }
+    }
+
+    private async Task<List<OrdenItem>> GetCartDetailsAsync()
+    {
+        var cartItems = CartService.GetCart();
+        // Validar stock
+        foreach (var item in cartItems.ToList())
+        {
+            var producto = await productoService.Buscar(item.ProductoId);
+            if (producto == null)
+            {
+                Notify(ToastType.Warning, $"El producto {item.Producto.Nombre} ya no está disponible.");
+                CartService.RemoveFromCart(item.ProductoId);
+                continue;
+            }
+            if (producto.Stock < item.Cantidad)
+            {
+                item.Cantidad = producto.Stock;
+                Notify(ToastType.Warning, $"Stock insuficiente para {item.Producto.Nombre}. Cantidad ajustada a {item.Cantidad}.");
+            }
+        }
+        // Filtrar elementos eliminados (si los hay)
+        return cartItems.Where(item => item.Cantidad > 0).ToList();
+    }
+
+    private async Task SubmitOrder()
+    {
+        if (!OrderDetails.Any())
+        {
+            Notify(ToastType.Danger, "El carrito está vacío.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(Order.NombreCliente))
+        {
+            Notify(ToastType.Danger, "Por favor, ingrese el nombre del cliente.");
+            return;
+        }
+
+        try
+        {
+            // Prepare the order
+            Order.Fecha = DateTime.Now;
+            Order.Monto = OrderDetails.Sum(x => x.Precio * x.Cantidad);
+            Order.ITBIS = 0.18f; // Example: 18% tax, adjust as needed
+            Order.EstadoId = 1; // Example: Pending state, adjust as needed
+            Order.OrdenesDetalle = OrderDetails.Select(item => new OrdenItem
+                {
+                    ProductoId = item.ProductoId,
+                    Cantidad = item.Cantidad,
+                    Precio = item.Precio
+                // Do not include Producto to avoid tracking issues
+                }).ToList();
+
+            // Save the order
+            await OrderService.AddObject(Order);
+
+            // Clear the cart
+            CartService.ClearCart();
+            Notify(ToastType.Success, "¡Pedido confirmado con éxito!");
+            await Task.Delay(2000);
+            NavigationManager.NavigateTo("/Productos/Orden");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al confirmar el pedido: {ex.Message}");
+            Notify(ToastType.Danger, $"Error al confirmar el pedido: {ex.Message}");
+        }
+    }
+
+    private void Notify(ToastType type, string message)
+    {
+        Messages.Add(new ToastMessage
+            {
+                Type = type,
+                Title = "Notificación",
+                Message = message,
+                AutoHide = true,
+                HelpText = DateTime.Now.ToString()
+            });
+    }
+   }

@@ -31,6 +31,7 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
@@ -43,6 +44,12 @@ builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddScoped<ProductoService>();
 builder.Services.AddScoped<CategoriaService>();
+builder.Services.AddScoped<ProvedoreServices>();
+builder.Services.AddScoped<CompraServices>();
+builder.Services.AddScoped<EstadoServices>();
+builder.Services.AddScoped<OrdenesService>();
+builder.Services.AddScoped<UsersServices>();
+builder.Services.AddScoped<CartService>();
 
 var app = builder.Build();
 
